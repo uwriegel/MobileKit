@@ -121,6 +121,46 @@
           }
         }
       }
+    },
+    "umobilekit": {
+      "root": "projects/umobilekit",
+      "sourceRoot": "projects/umobilekit/src",
+      "projectType": "library",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/umobilekit/tsconfig.lib.json",
+            "project": "projects/umobilekit/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "project": "projects/umobilekit/ng-package.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/umobilekit/src/test.ts",
+            "tsConfig": "projects/umobilekit/tsconfig.spec.json",
+            "karmaConfig": "projects/umobilekit/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/umobilekit/tsconfig.lib.json",
+              "projects/umobilekit/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "umobilekit-project"

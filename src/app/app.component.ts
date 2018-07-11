@@ -12,5 +12,6 @@ export class AppComponent {
     
 }
 
+// TODO: <base href="./"> for Android!
 // TODO: include iscroll.js 
 // TODO: build scroll testapp, test iscroll

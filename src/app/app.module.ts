@@ -1,17 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
-import { UmobilekitComponent, SetupService } from 'umobilekit'
+import { SetupService } from 'umobilekit'
 
 import { AppComponent } from './app.component'
+import { UmobilekitModule } from 'projects/umobilekit/src/public_api';
 
 @NgModule({
     declarations: [
-        AppComponent,
-        UmobilekitComponent,
-
+        AppComponent
     ],
     imports: [
-        BrowserModule
+        BrowserModule,
+        UmobilekitModule
     ],
     providers: [         
         SetupService

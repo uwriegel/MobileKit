@@ -1,0 +1,9 @@
+:host {
+    display: flex;
+    clip-path: inset(0px 0px 0px 0px);
+}
+
+.scroller {
+    flex-grow: 1;
+}
+

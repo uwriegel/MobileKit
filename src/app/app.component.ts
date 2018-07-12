@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { SetupService } from 'umobilekit'
 
 @Component({
@@ -6,10 +6,15 @@ import { SetupService } from 'umobilekit'
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
     
+    ngOnInit() {
+        this.items = [...Array(50)].map((_, i) => `Eintrag ${i}`)
+    }
+
+    items: string[]
+
     constructor(private setup: SetupService) {}
-    
 }
 
 // TODO: <base href="./"> for Android!

@@ -1,10 +1,12 @@
 :host {
-    display: flex;
+    position: relative;
     overflow: hidden;
     clip-path: inset(0px 0px 0px 0px);
 }
 
 .scroller {
-    flex-grow: 1;
+    position: absolute;
+    height: 100%;
+    width: 100%;
 }
 

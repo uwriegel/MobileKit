@@ -14,5 +14,13 @@ export class AppComponent implements OnInit {
     items: string[]
 
     constructor() {}
+
+    private onNeue() {
+        this.items = this.items.concat([...Array(50)].map((_, i) => `Eintrag ${i}`))
+    }
+
+    private onWeg() {
+        this.items = this.items.slice(0, this.items.length - 10)
+    }
 }
 

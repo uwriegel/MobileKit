@@ -5,9 +5,24 @@
 }
 
 .header {
-    padding: 20px;
     background-color: blue;
     color: white;
+}
+
+.headerContent {
+    display: flex;
+}
+
+.headerContent>div:first-of-type {
+    flex-grow: 1;
+    margin: 15px;
+}
+
+.button {
+    margin: 5px;
+    background-color: lightblue;
+    color: black;
+    padding: 10px;
 }
 
 mk-scroller {

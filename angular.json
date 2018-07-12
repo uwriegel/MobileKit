@@ -66,23 +66,6 @@
             "browserTarget": "umobilekit-project:build"
           }
         },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "src/tsconfig.spec.json",
-            "karmaConfig": "src/karma.conf.js",
-            "styles": [
-              "src/styles.css"
-            ],
-            "scripts": [],
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ]
-          }
-        },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
@@ -128,7 +111,7 @@
       "root": "projects/umobilekit",
       "sourceRoot": "projects/umobilekit/src",
       "projectType": "library",
-      "prefix": "lib",
+      "prefix": "mk",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
@@ -140,14 +123,6 @@
             "production": {
               "project": "projects/umobilekit/ng-package.prod.json"
             }
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/umobilekit/src/test.ts",
-            "tsConfig": "projects/umobilekit/tsconfig.spec.json",
-            "karmaConfig": "projects/umobilekit/karma.conf.js"
           }
         },
         "lint": {

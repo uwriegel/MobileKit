@@ -1,11 +1,12 @@
-import { NgModule } from '@angular/core';
-import { UmobilekitComponent } from './umobilekit.component';
+import { NgModule } from '@angular/core'
+import { ScrollerComponent } from './scroller/scroller.component'
+import { SetupService } from './setup.service'
 
 @NgModule({
-    imports: [
-    ],
-    declarations: [UmobilekitComponent],
-    exports: [UmobilekitComponent]
+    imports: [ ],
+    declarations: [ScrollerComponent],
+    exports: [ScrollerComponent],
+    providers: [ SetupService ],
+
 })
-export class UmobilekitModule { 
-}
+export class UmobilekitModule { }

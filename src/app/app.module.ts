@@ -1,9 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser'
 import { NgModule } from '@angular/core'
-import { SetupService } from 'umobilekit'
 
 import { AppComponent } from './app.component'
-import { UmobilekitModule } from 'projects/umobilekit/src/public_api';
+import { UmobilekitModule } from 'projects/umobilekit/src/public_api'
 
 @NgModule({
     declarations: [
@@ -12,9 +11,6 @@ import { UmobilekitModule } from 'projects/umobilekit/src/public_api';
     imports: [
         BrowserModule,
         UmobilekitModule
-    ],
-    providers: [         
-        SetupService
     ],
     bootstrap: [AppComponent]
 })

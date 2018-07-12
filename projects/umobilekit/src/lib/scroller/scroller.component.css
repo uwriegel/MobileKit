@@ -1,5 +1,6 @@
 :host {
     display: flex;
+    overflow: hidden;
     clip-path: inset(0px 0px 0px 0px);
 }
 

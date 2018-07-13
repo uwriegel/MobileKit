@@ -1,5 +1,5 @@
 <mk-menu-list *ngIf="withDrawer" (click)="onOpenDrawer()"></mk-menu-list>
-<div class="title">{{title}}</div>
+<div  (window:popstate)="onPop($event)" class="title">{{title}}</div>
 <ng-content select="mk-title-button"></ng-content>
 <div class="drawer" *ngIf="drawerOpen">
     <ng-content select=".mk-drawer"></ng-content>

@@ -9,7 +9,6 @@ export class TitleButtonComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
-  }
+  ngOnInit() {  }
 
 }

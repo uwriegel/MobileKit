@@ -10,7 +10,7 @@ declare class ScrollerParams {
     /*
      * Should mouse be supported?
      */
-    disablePointer: boolean
+    disablePointer?: boolean
     disableTouch: boolean
     fadeScrollbars: boolean
     shrinkScrollbars: 'clip'
@@ -41,7 +41,7 @@ export class ScrollerComponent implements OnInit, AfterViewInit {
             scrollbars: this.showScrollBar,
             interactiveScrollbars: this.showScrollBar,
             click: true,
-            disablePointer: true,
+            //disablePointer: true,
             disableTouch: false,
             fadeScrollbars: true,
             shrinkScrollbars: 'clip'

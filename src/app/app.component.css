@@ -4,29 +4,6 @@
     height: 100vh;
 }
 
-.header {
-    background-color: blue;
-    color: white;
-}
-
-.headerContent {
-    display: flex;
-}
-
-.headerContent>div:first-of-type {
-    flex-grow: 1;
-    margin: 15px;
-}
-
-.button {
-    margin: 5px;
-    background-color: lightblue;
-    color: black;
-    padding: 10px;
-}
-
 mk-scroller {
     flex-grow: 1;
-    background-color: blanchedalmond;
-    margin: 4px;
 }

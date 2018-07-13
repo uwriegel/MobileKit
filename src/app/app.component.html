@@ -1,10 +1,4 @@
-<div class="header">
-    <div class="headerContent">
-        <div>Mobile Kit</div>
-        <div class="button" (click)="onNeue()">Neue</div>
-        <div class="button" (click)="onWeg()">Weg</div>
-    </div>
-</div>
+<mk-title-bar [title]="'Mobile Kit'"></mk-title-bar>
 <mk-scroller>
     <div *ngFor="let item of items">Hallo</div>
 </mk-scroller>

@@ -1,4 +1,7 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+    --mobilekit-color-header-background: #2196F3;
+    --mobilekit-color-header: white;
+}
 body {
     margin: 0px;
     padding: 0px;

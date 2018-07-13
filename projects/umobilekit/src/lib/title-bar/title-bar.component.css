@@ -19,6 +19,15 @@
     flex-grow: 1;
 }
 
-.buttons {
+mk-menu-list {
+    margin-left: 10px;
+    margin-top: 2px;
+}
+
+.drawer {
+    position: fixed;
+    height: 100%;
+    top: 0px;
+    width: 80%;
     display: flex;
 }

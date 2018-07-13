@@ -8,9 +8,14 @@ import { Component, OnInit, Input } from '@angular/core'
 export class TitleBarComponent implements OnInit {
 
     @Input() title = ""
+    @Input() withDrawer = false
+    drawerOpen = false
 
     constructor() { }
 
     ngOnInit() { }
 
+    onOpenDrawer() {
+        this.drawerOpen = true
+    }
 }

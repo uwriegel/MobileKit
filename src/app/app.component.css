@@ -7,3 +7,8 @@
 mk-scroller {
     flex-grow: 1;
 }
+
+.mk-drawer {
+    background-color: brown;
+    flex-grow: 1;
+}

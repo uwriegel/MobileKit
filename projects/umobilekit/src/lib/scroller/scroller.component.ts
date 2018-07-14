@@ -30,11 +30,15 @@ export class ScrollerComponent implements OnInit, AfterViewInit {
     @ViewChild("scroller")
     scroller: ElementRef
 
+    static scrollers: ScrollerComponent[] = []
+
     showScrollBar = true
 
     constructor() { }
 
-    ngOnInit() { }
+    ngOnInit() {
+        ScrollerComponent.scrollers = ScrollerComponent.scrollers.concat([this])
+    }
 
     ngAfterViewInit() {
         this.iscroll = new IScroll(this.scroller.nativeElement, {
@@ -51,9 +55,16 @@ export class ScrollerComponent implements OnInit, AfterViewInit {
             subtree: true,
             childList: true
         })
+        console.log("Schattenwurzel", this.scroller.nativeElement.shadowRoot)
+        this.iscroll.refresh()
     }
 
-    private readonly observer = new MutationObserver(mutations => this.iscroll.refresh())
+    refresh() { this.iscroll.refresh() }
+
+    private readonly observer = new MutationObserver(mutations => 
+        this.iscroll.refresh()
+    )
 
     private iscroll: any
 }
+

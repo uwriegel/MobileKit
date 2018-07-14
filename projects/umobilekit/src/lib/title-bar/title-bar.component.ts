@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core'
 import { PopStateEvent } from '@angular/common'
 import { trigger, transition, style, animate, state } from '@angular/animations'
+import { ScrollerComponent } from '../scroller/scroller.component';
 
 @Component({
     selector: 'mk-title-bar',
@@ -52,6 +53,7 @@ export class TitleBarComponent implements OnInit {
 
     onOpenDrawer() {
         this.drawerOpen = true
+        setTimeout(n => ScrollerComponent.scrollers.forEach(n => n.refresh()))
         history.pushState("drawer", null, '/drawer')
     }
 

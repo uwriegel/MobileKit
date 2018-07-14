@@ -8,7 +8,7 @@ import { Component, OnInit } from '@angular/core'
 export class AppComponent implements OnInit {
 
     ngOnInit() {
-        this.items = [...Array(50)].map((_, i) => `Eintrag ${i}`)
+        this.items = Array.from(Array(100).keys()).map((_, i) => `Eintrag ${i}`)
     }
 
     items: string[]

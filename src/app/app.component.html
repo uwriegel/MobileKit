@@ -1,8 +1,8 @@
 <mk-title-bar [title]="'Mobile Kit'" [withDrawer]=true>
-    <div class="mk-drawer"></div>
+    <app-drawer class="mk-drawer"></app-drawer>
     <mk-title-button (click)="onNeue()">Neue</mk-title-button>
     <mk-title-button (click)="onWeg()">Löschen</mk-title-button>
 </mk-title-bar>
 <mk-scroller>
-    <div *ngFor="let item of items">Hallo</div>
+    <div *ngFor="let item of items">Das ist der {{item}}</div>
 </mk-scroller>

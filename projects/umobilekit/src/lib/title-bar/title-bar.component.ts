@@ -8,35 +8,61 @@ import { ScrollerComponent } from '../scroller/scroller.component';
     templateUrl: './title-bar.component.html',
     styleUrls: ['./title-bar.component.css'],
     animations: [
-        trigger('fadeInOut', [
-            transition('void => *', [
+        trigger('shader', [
+            state("manual", 
+                style({
+                    opacity: 0.3
+                })),
+            state("automatic", 
+                style({
+                    opacity: 1
+                })),
+            transition('void => manual', [
                 style({
                     opacity: 0
-                }), //style only for transition transition (after transiton it removes)
-                animate("300ms ease-out", style({
-                    opacity: 1
-                })) // the new state of the transition(after transiton it removes)
+                }),
+                animate("0ms"),
             ]),
-            transition('* => void', [
-                animate("300ms ease-in", style({
+            transition('void => automatic', [
+                style({
                     opacity: 0
-                })) // the new state of the transition(after transiton it removes)
-            ])
-        ]),
-        trigger('flyInOut', [
-            transition('void => *', [
+                }),
+                animate("300ms ease-out"),
+            ]),
+            transition('automatic => void', [
+                animate("300ms ease-out",
+                style({
+                    opacity: 0
+                }))            
+            ]),
+        ]),            
+        trigger('transitionMode', [
+            state("manual", 
+                style({
+                    transform: 'translateX(-70%)'
+                })),
+            state("automatic", 
+                style({
+                    transform: 'translateX(0%)'
+                })),
+            transition('void => manual', [
+                style({
+                    transform: 'translateX(-100%)'
+                }),
+                animate("0ms"),
+            ]),
+            transition('void => automatic', [
                 style({
                     transform: 'translateX(-100%)'
                 }),
                 animate("300ms ease-out"),
             ]),
-            transition('* => void', [
+            transition('automatic => void', [
                 animate("300ms ease-out",
-                    style({
-                        transform: 'translateX(-100%)'
-                    })
-                )
-            ])
+                style({
+                    transform: 'translateX(-100%)'
+                }))            
+            ]),
         ])            
     ]        
 
@@ -46,6 +72,8 @@ export class TitleBarComponent implements OnInit {
     @Input() title = ""
     @Input() withDrawer = false
     drawerOpen = false
+    //transitionMode = 'manual'
+    transitionMode = 'automatic'
 
     constructor() { }
 

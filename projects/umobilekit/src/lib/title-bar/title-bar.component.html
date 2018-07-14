@@ -1,8 +1,8 @@
 <mk-menu-list *ngIf="withDrawer" (click)="onOpenDrawer()"></mk-menu-list>
 <div  (window:popstate)="onPop($event)" class="title">{{title}}</div>
 <ng-content select="mk-title-button"></ng-content>
-<div class="shader" *ngIf="drawerOpen" [@fadeInOut]></div>
-<div class="drawer" *ngIf="drawerOpen" [@flyInOut]>
+<div class="shader" *ngIf="drawerOpen" [@shader]="transitionMode"></div>
+<div class="drawer" *ngIf="drawerOpen" [@transitionMode]="transitionMode">
     <ng-content select=".mk-drawer"></ng-content>
 </div>
 

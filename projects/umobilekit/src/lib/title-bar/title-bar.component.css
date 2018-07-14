@@ -26,6 +26,7 @@ mk-menu-list {
 
 .drawer {
     position: fixed;
+    background: yellowgreen;
     height: 100%;
     top: 0px;
     width: 79%;

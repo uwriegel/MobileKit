@@ -11,7 +11,7 @@ import { ScrollerComponent } from '../scroller/scroller.component';
         trigger('shader', [
             state("manual", 
                 style({
-                    opacity: 0.3
+                    opacity: 0.1
                 })),
             state("automatic", 
                 style({
@@ -21,7 +21,7 @@ import { ScrollerComponent } from '../scroller/scroller.component';
                 style({
                     opacity: 0
                 }),
-                animate("0ms"),
+                animate("150ms"),
             ]),
             transition('void => automatic', [
                 style({
@@ -35,11 +35,17 @@ import { ScrollerComponent } from '../scroller/scroller.component';
                     opacity: 0
                 }))            
             ]),
+            transition('manual => void', [
+                animate("150ms ease-out",
+                style({
+                    opacity: 0
+                }))            
+            ]),
         ]),            
         trigger('transitionMode', [
             state("manual", 
                 style({
-                    transform: 'translateX(-70%)'
+                    transform: 'translateX(-90%)'
                 })),
             state("automatic", 
                 style({
@@ -49,7 +55,7 @@ import { ScrollerComponent } from '../scroller/scroller.component';
                 style({
                     transform: 'translateX(-100%)'
                 }),
-                animate("0ms"),
+                animate("150ms"),
             ]),
             transition('void => automatic', [
                 style({
@@ -59,6 +65,12 @@ import { ScrollerComponent } from '../scroller/scroller.component';
             ]),
             transition('automatic => void', [
                 animate("300ms ease-out",
+                style({
+                    transform: 'translateX(-100%)'
+                }))            
+            ]),
+            transition('manual => void', [
+                animate("150ms ease-out",
                 style({
                     transform: 'translateX(-100%)'
                 }))            
@@ -72,7 +84,6 @@ export class TitleBarComponent implements OnInit {
     @Input() title = ""
     @Input() withDrawer = false
     drawerOpen = false
-    //transitionMode = 'manual'
     transitionMode = 'automatic'
 
     constructor() { }
@@ -88,4 +99,18 @@ export class TitleBarComponent implements OnInit {
     onPop(evt: PopStateEvent) {
         this.drawerOpen = false
     }
+
+    onTouchstart(evt: TouchEvent) {
+        if (evt.touches.length == 1 &&  evt.touches[0].clientX < 15) {
+            this.transitionMode = 'manual'
+            this.drawerOpen = true
+            evt.preventDefault()
+            evt.stopPropagation()
+        }
+    }
+
+    onTouchend(evt: TouchEvent) {
+        this.transitionMode = 'automatic'
+        this.drawerOpen = false
+}
 }

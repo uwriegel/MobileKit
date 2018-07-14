@@ -28,6 +28,14 @@ mk-menu-list {
     position: fixed;
     height: 100%;
     top: 0px;
-    width: 80%;
+    width: 79%;
     display: flex;
+}
+
+.shader {
+    position: fixed;
+    height: 100%;
+    top: 0px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.65);
 }

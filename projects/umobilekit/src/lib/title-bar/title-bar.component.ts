@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core'
 import { PopStateEvent } from '@angular/common'
 import { ScrollerComponent } from '../scroller/scroller.component'
+import { Subject, ReplaySubject } from 'rxjs'
 
 @Component({
     selector: 'mk-title-bar',
@@ -12,20 +13,20 @@ export class TitleBarComponent implements OnInit {
     @Input() title = ""
     @Input() withDrawer = false
 
-    drawerPosition = 0 // in Percent
+    drawerPosition = new ReplaySubject<number>(1)
 
     constructor() { }
 
     ngOnInit() { }
 
     onOpenDrawer() {
-        this.drawerPosition = 1
+        this.drawerPosition.next(1)
         setTimeout(n => ScrollerComponent.scrollers.forEach(n => n.refresh()))
         history.pushState("drawer", null, '/drawer')
     }
 
     onPop(evt: PopStateEvent) {
-        this.drawerPosition = 0
+        this.drawerPosition.next(0)
     }
 
     onTouchstart(evt: TouchEvent) {
@@ -36,7 +37,7 @@ export class TitleBarComponent implements OnInit {
             const drawerWidth = width * 79 / 100
             console.log("drawerWidth", drawerWidth)
 
-            this.drawerPosition = 0.05
+            this.drawerPosition.next(0.05)
             const initialX = evt.touches[0].clientX
             const initialY = evt.touches[0].clientY
 
@@ -55,7 +56,7 @@ export class TitleBarComponent implements OnInit {
                     if (Math.abs(ratio) < 2) {
                         window.removeEventListener('touchmove', touchmove, true)
                         window.removeEventListener('touchend', touchend, true)
-                        this.drawerPosition = 0
+                        this.drawerPosition.next(0)
                         evt.preventDefault()
                         evt.stopPropagation()
                         return
@@ -66,7 +67,7 @@ export class TitleBarComponent implements OnInit {
                 if (position > 100)
                     position = 100
                 console.log("Position", position)
-                this.drawerPosition = position / 100
+                this.drawerPosition.next(position / 100)
 
                 evt.preventDefault()
                 evt.stopPropagation()
@@ -75,7 +76,7 @@ export class TitleBarComponent implements OnInit {
             const touchend = (evt: TouchEvent) => {
                 window.removeEventListener('touchmove', touchmove, true)
                 window.removeEventListener('touchend', touchend, true)
-                this.drawerPosition = 0
+                this.drawerPosition.next(0)
                 evt.preventDefault()
                 evt.stopPropagation()
             }                

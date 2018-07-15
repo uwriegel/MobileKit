@@ -55,7 +55,6 @@ export class ScrollerComponent implements OnInit, AfterViewInit {
             subtree: true,
             childList: true
         })
-        console.log("Schattenwurzel", this.scroller.nativeElement.shadowRoot)
         this.iscroll.refresh()
     }
 

@@ -1,103 +1,31 @@
 import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core'
 import { PopStateEvent } from '@angular/common'
-import { trigger, transition, style, animate, state } from '@angular/animations'
-import { ScrollerComponent } from '../scroller/scroller.component';
+import { ScrollerComponent } from '../scroller/scroller.component'
 
 @Component({
     selector: 'mk-title-bar',
     templateUrl: './title-bar.component.html',
-    styleUrls: ['./title-bar.component.css'],
-    animations: [
-        trigger('shader', [
-            state("manual", 
-                style({
-                    opacity: 0.05
-                })),
-            state("automatic", 
-                style({
-                    opacity: 1
-                })),
-            transition('void => manual', [
-                style({
-                    opacity: 0
-                }),
-                animate("150ms"),
-            ]),
-            transition('void => automatic', [
-                style({
-                    opacity: 0
-                }),
-                animate("300ms ease-out"),
-            ]),
-            transition('automatic => void', [
-                animate("300ms ease-out",
-                style({
-                    opacity: 0
-                }))            
-            ]),
-            transition('manual => void', [
-                animate("150ms ease-out",
-                style({
-                    opacity: 0
-                }))            
-            ]),
-        ]),            
-        trigger('transitionMode', [
-            state("manual", 
-                style({
-                    transform: 'translateX(-95%)'
-                })),
-            state("automatic", 
-                style({
-                    transform: 'translateX(0%)'
-                })),
-            transition('void => manual', [
-                style({
-                    transform: 'translateX(-100%)'
-                }),
-                animate("150ms"),
-            ]),
-            transition('void => automatic', [
-                style({
-                    transform: 'translateX(-100%)'
-                }),
-                animate("300ms ease-out"),
-            ]),
-            transition('automatic => void', [
-                animate("300ms ease-out",
-                style({
-                    transform: 'translateX(-100%)'
-                }))            
-            ]),
-            transition('manual => void', [
-                animate("150ms ease-out",
-                style({
-                    transform: 'translateX(-100%)'
-                }))            
-            ]),
-        ])            
-    ]        
-
+    styleUrls: ['./title-bar.component.css']
 })
 export class TitleBarComponent implements OnInit {
 
     @Input() title = ""
     @Input() withDrawer = false
-    drawerOpen = false
-    transitionMode = 'automatic'
+
+    drawerPosition = 0 // in Percent
 
     constructor() { }
 
     ngOnInit() { }
 
     onOpenDrawer() {
-        this.drawerOpen = true
+        this.drawerPosition = 1
         setTimeout(n => ScrollerComponent.scrollers.forEach(n => n.refresh()))
         history.pushState("drawer", null, '/drawer')
     }
 
     onPop(evt: PopStateEvent) {
-        this.drawerOpen = false
+        this.drawerPosition = 0
     }
 
     onTouchstart(evt: TouchEvent) {
@@ -108,8 +36,7 @@ export class TitleBarComponent implements OnInit {
             const drawerWidth = width * 79 / 100
             console.log("drawerWidth", drawerWidth)
 
-            this.transitionMode = 'manual'
-            this.drawerOpen = true
+            this.drawerPosition = 0.05
             const initialX = evt.touches[0].clientX
             const initialY = evt.touches[0].clientY
 
@@ -128,8 +55,7 @@ export class TitleBarComponent implements OnInit {
                     if (Math.abs(ratio) < 2) {
                         window.removeEventListener('touchmove', touchmove, true)
                         window.removeEventListener('touchend', touchend, true)
-                        this.transitionMode = 'automatic'
-                        this.drawerOpen = false
+                        this.drawerPosition = 0
                         evt.preventDefault()
                         evt.stopPropagation()
                         return
@@ -140,10 +66,7 @@ export class TitleBarComponent implements OnInit {
                 if (position > 100)
                     position = 100
                 console.log("Position", position)
-                const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
-                drawer.style.transform = `translateX(${(position - 100)}%)`
-                const shader = document.getElementsByClassName("shader")[0] as HTMLElement
-                shader.style.opacity = `${(position / 100)}`
+                this.drawerPosition = position / 100
 
                 evt.preventDefault()
                 evt.stopPropagation()
@@ -152,8 +75,7 @@ export class TitleBarComponent implements OnInit {
             const touchend = (evt: TouchEvent) => {
                 window.removeEventListener('touchmove', touchmove, true)
                 window.removeEventListener('touchend', touchend, true)
-                this.transitionMode = 'automatic'
-                this.drawerOpen = false
+                this.drawerPosition = 0
                 evt.preventDefault()
                 evt.stopPropagation()
             }                

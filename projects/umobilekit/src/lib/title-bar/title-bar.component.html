@@ -1,5 +1,5 @@
 <mk-menu-list *ngIf="withDrawer" (click)="onOpenDrawer()"></mk-menu-list>
-<div (window:popstate)="onPop($event)" (window:touchstart)="onTouchstart($event)" (window:touchend)="onTouchend($event)" class="title">{{title}}</div>
+<div (window:popstate)="onPop($event)" (window:touchstart)="onTouchstart($event)" class="title">{{title}}</div>
 <ng-content select="mk-title-button"></ng-content>
 <div class="shader" *ngIf="drawerOpen" [@shader]="transitionMode"></div>
 <div class="drawer" *ngIf="drawerOpen" [@transitionMode]="transitionMode">

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core'
 import { PopStateEvent } from '@angular/common'
 import { trigger, transition, style, animate, state } from '@angular/animations'
 import { ScrollerComponent } from '../scroller/scroller.component';
@@ -11,7 +11,7 @@ import { ScrollerComponent } from '../scroller/scroller.component';
         trigger('shader', [
             state("manual", 
                 style({
-                    opacity: 0.1
+                    opacity: 0.05
                 })),
             state("automatic", 
                 style({
@@ -45,7 +45,7 @@ import { ScrollerComponent } from '../scroller/scroller.component';
         trigger('transitionMode', [
             state("manual", 
                 style({
-                    transform: 'translateX(-90%)'
+                    transform: 'translateX(-95%)'
                 })),
             state("automatic", 
                 style({
@@ -102,15 +102,66 @@ export class TitleBarComponent implements OnInit {
 
     onTouchstart(evt: TouchEvent) {
         if (evt.touches.length == 1 &&  evt.touches[0].clientX < 15) {
+
+            const width = window.document.body.clientWidth
+            console.log("Weit", width)
+            const drawerWidth = width * 79 / 100
+            console.log("drawerWidth", drawerWidth)
+
             this.transitionMode = 'manual'
             this.drawerOpen = true
+            const initialX = evt.touches[0].clientX
+            const initialY = evt.touches[0].clientY
+
+            let drawerOffset = -1 
+
+            const touchmove = (evt: TouchEvent) => {
+                if (drawerOffset == -1) {
+
+                    // drawer is initially 5% visible: drawerWidth * 5 / 100
+                    const initial = drawerWidth * 5 / 100
+                    drawerOffset = initial - evt.touches[0].clientX
+
+                    const diffx = evt.touches[0].clientX - initialX
+                    const diffy = evt.touches[0].clientY - initialY
+                    const ratio = diffx / diffy 
+                    if (Math.abs(ratio) < 2) {
+                        window.removeEventListener('touchmove', touchmove, true)
+                        window.removeEventListener('touchend', touchend, true)
+                        this.transitionMode = 'automatic'
+                        this.drawerOpen = false
+                        evt.preventDefault()
+                        evt.stopPropagation()
+                        return
+                    }
+                }
+
+                let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
+                if (position > 100)
+                    position = 100
+                console.log("Position", position)
+                const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
+                drawer.style.transform = `translateX(${(position - 100)}%)`
+                const shader = document.getElementsByClassName("shader")[0] as HTMLElement
+                shader.style.opacity = `${(position / 100)}`
+
+                evt.preventDefault()
+                evt.stopPropagation()
+            }
+
+            const touchend = (evt: TouchEvent) => {
+                window.removeEventListener('touchmove', touchmove, true)
+                window.removeEventListener('touchend', touchend, true)
+                this.transitionMode = 'automatic'
+                this.drawerOpen = false
+                evt.preventDefault()
+                evt.stopPropagation()
+            }                
+            window.addEventListener('touchmove', touchmove, true)
+            window.addEventListener('touchend', touchend, true)
+
             evt.preventDefault()
             evt.stopPropagation()
         }
     }
-
-    onTouchend(evt: TouchEvent) {
-        this.transitionMode = 'automatic'
-        this.drawerOpen = false
-}
 }

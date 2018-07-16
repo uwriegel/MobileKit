@@ -17,8 +17,9 @@ npm publish
 ```ng g c Scroller --project=umobilekit```  
 Don't forget to add the newly generated component in the ```exports``` section of the lib's ```umobilekit.module```
 
-// TODO: Touch handling: 0 - 100%: 
-// - when state manual: attach ontouchmove and ontouchend, detach on touchend
-// - on touch move: touchend x > 50%: animate open else animate closed
-// TODO: Flinging: 45% - 100%: 55% route, veloyity down to 0
 // TODO: Haptic feedback when opening drawer
+// TODO: Scroller in drawer not scrolling
+// TODO: left click when opened again: supress
+// TODO: Opened Drawer must be moved by touch
+// TODO: Always correct History
+// TODO: Open not on 50% but 0n 35%

@@ -1,7 +1,6 @@
-import { Component, OnInit, Input, ViewChild, ElementRef } from '@angular/core'
+import { Component, OnInit, Input } from '@angular/core'
 import { PopStateEvent } from '@angular/common'
 import { ScrollerComponent } from '../scroller/scroller.component'
-import { Subject, ReplaySubject } from 'rxjs'
 
 @Component({
     selector: 'mk-title-bar',
@@ -13,7 +12,53 @@ export class TitleBarComponent implements OnInit {
     @Input() title = ""
     @Input() withDrawer = false
 
-    drawerPosition = 0
+    get drawerPosition() { return this._drawerPosition}
+    set drawerPosition(value: number) {
+        this._drawerPosition = value
+        this.transform(value)
+    }
+    _drawerPosition = 0
+    actualDrawerPosition = 0
+
+    private setPoint = 0
+    transform(setPoint: number): any {
+
+        if (this.setPoint != setPoint) {
+            let previousSetPoint = this.setPoint
+            this.setPoint = setPoint
+            let previousTimestamp = 0
+
+            let position = this.setPoint - previousSetPoint
+
+            const ease = x => x*(2-x)
+            const duration = 300
+
+            const animate = (timestamp: number) => {
+                if (previousTimestamp) {
+                    const timeDiff = timestamp - previousTimestamp
+                    const max = Math.abs(position)
+                    let ratio = timeDiff / (duration * max)
+                    if (ratio > 1)
+                        ratio = 1
+                    if (ratio <= 1) {
+                        this.actualDrawerPosition = previousSetPoint  + (position * ease(ratio))
+                        if (ratio < 1) 
+                            requestAnimationFrame(animate)
+                    }
+                }
+                else {
+                    previousTimestamp = timestamp
+                    requestAnimationFrame(animate)
+                }
+            }
+        
+            requestAnimationFrame(animate)
+        }
+    }
+
+
+
+
 
     constructor() { }
 
@@ -33,9 +78,7 @@ export class TitleBarComponent implements OnInit {
         if (evt.touches.length == 1 &&  evt.touches[0].clientX < 15) {
 
             const width = window.document.body.clientWidth
-            console.log("Weit", width)
             const drawerWidth = width * 79 / 100
-            console.log("drawerWidth", drawerWidth)
 
             this.drawerPosition = 0.05
             const initialX = evt.touches[0].clientX
@@ -66,7 +109,6 @@ export class TitleBarComponent implements OnInit {
                 let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
                 if (position > 100)
                     position = 100
-                console.log("Position", position)
                 this.drawerPosition = position / 100
 
                 evt.preventDefault()
@@ -76,7 +118,16 @@ export class TitleBarComponent implements OnInit {
             const touchend = (evt: TouchEvent) => {
                 window.removeEventListener('touchmove', touchmove, true)
                 window.removeEventListener('touchend', touchend, true)
-                this.drawerPosition = 0
+
+                if (this.drawerPosition > 0.5) {
+                    this.drawerPosition = 1
+                    history.pushState("drawer", null, '/drawer')
+                }
+                else {
+                    this.drawerPosition = 0
+                    history.back()
+                }
+
                 evt.preventDefault()
                 evt.stopPropagation()
             }                

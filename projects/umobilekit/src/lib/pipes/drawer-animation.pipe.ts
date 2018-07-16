@@ -9,6 +9,7 @@ export class DrawerAnimationPipe implements PipeTransform {
     // TODO: start value (is mot 0!!!)
     // when back, then start value = 1!
     // or when manual moving, start value is current value!
+    // TODO: take into accout direction 0.03 -> 0.5 or 0.6 -> 0.4 
     transform(setPoint: number): any {
 
         if (this.setPoint != setPoint) {

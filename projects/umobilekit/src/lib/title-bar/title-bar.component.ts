@@ -13,20 +13,20 @@ export class TitleBarComponent implements OnInit {
     @Input() title = ""
     @Input() withDrawer = false
 
-    drawerPosition = new ReplaySubject<number>(1)
+    drawerPosition = 0
 
     constructor() { }
 
     ngOnInit() { }
 
     onOpenDrawer() {
-        this.drawerPosition.next(1)
+        this.drawerPosition = 1
         setTimeout(n => ScrollerComponent.scrollers.forEach(n => n.refresh()))
         history.pushState("drawer", null, '/drawer')
     }
 
     onPop(evt: PopStateEvent) {
-        this.drawerPosition.next(0)
+        this.drawerPosition = 0
     }
 
     onTouchstart(evt: TouchEvent) {
@@ -37,7 +37,7 @@ export class TitleBarComponent implements OnInit {
             const drawerWidth = width * 79 / 100
             console.log("drawerWidth", drawerWidth)
 
-            this.drawerPosition.next(0.05)
+            this.drawerPosition = 0.05
             const initialX = evt.touches[0].clientX
             const initialY = evt.touches[0].clientY
 
@@ -56,7 +56,7 @@ export class TitleBarComponent implements OnInit {
                     if (Math.abs(ratio) < 2) {
                         window.removeEventListener('touchmove', touchmove, true)
                         window.removeEventListener('touchend', touchend, true)
-                        this.drawerPosition.next(0)
+                        this.drawerPosition = 0
                         evt.preventDefault()
                         evt.stopPropagation()
                         return
@@ -67,7 +67,7 @@ export class TitleBarComponent implements OnInit {
                 if (position > 100)
                     position = 100
                 console.log("Position", position)
-                this.drawerPosition.next(position / 100)
+                this.drawerPosition = position / 100
 
                 evt.preventDefault()
                 evt.stopPropagation()
@@ -76,7 +76,7 @@ export class TitleBarComponent implements OnInit {
             const touchend = (evt: TouchEvent) => {
                 window.removeEventListener('touchmove', touchmove, true)
                 window.removeEventListener('touchend', touchend, true)
-                this.drawerPosition.next(0)
+                this.drawerPosition = 0
                 evt.preventDefault()
                 evt.stopPropagation()
             }                

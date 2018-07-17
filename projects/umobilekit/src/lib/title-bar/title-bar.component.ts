@@ -47,6 +47,7 @@ export class TitleBarComponent implements OnInit {
                     }
                 }
                 else {
+                    setTimeout(n => ScrollerComponent.refresh(), 100)
                     previousTimestamp = timestamp
                     requestAnimationFrame(animate)
                 }
@@ -66,7 +67,6 @@ export class TitleBarComponent implements OnInit {
 
     onOpenDrawer() {
         this.drawerPosition = 1
-        setTimeout(n => ScrollerComponent.scrollers.forEach(n => n.refresh()))
         history.pushState("drawer", null, '/drawer')
     }
 
@@ -75,12 +75,12 @@ export class TitleBarComponent implements OnInit {
     }
     
     onTouchstart(evt: TouchEvent, isOpen: boolean) {
-        if ( (!isOpen && evt.touches.length == 1 &&  evt.touches[0].clientX < 15)
+        if ( (!isOpen && evt.touches.length == 1 && evt.touches[0].clientX < 15 &&  evt.touches[0].clientY > 55)
             || isOpen) {
             const width = window.document.body.clientWidth
             const drawerWidth = width * 79 / 100
 
-            if (!isOpen)
+            if (!isOpen) 
                 this.drawerPosition = 0.05
             else
                 this.drawerPosition = 1

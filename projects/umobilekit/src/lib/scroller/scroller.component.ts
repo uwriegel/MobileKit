@@ -27,10 +27,12 @@ declare class IScroll {
 })
 export class ScrollerComponent implements OnInit, AfterViewInit {
 
+    static refresh() {
+        ScrollerComponent.scrollers.forEach(n => n.refresh())
+    }
+
     @ViewChild("scroller")
     scroller: ElementRef
-
-    static scrollers: ScrollerComponent[] = []
 
     showScrollBar = true
 
@@ -59,6 +61,8 @@ export class ScrollerComponent implements OnInit, AfterViewInit {
     }
 
     refresh() { this.iscroll.refresh() }
+
+    private static scrollers: ScrollerComponent[] = []
 
     private readonly observer = new MutationObserver(mutations => 
         this.iscroll.refresh()

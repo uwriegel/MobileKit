@@ -18,7 +18,5 @@ npm publish
 Don't forget to add the newly generated component in the ```exports``` section of the lib's ```umobilekit.module```
 
 // TODO: Haptic feedback when opening drawer
-// TODO: OpenButton: click not functioning when touching x < 15
-// TODO: Scroller in drawer not scrolling
 // TODO: Always correct History
 // TODO: Fling

@@ -73,14 +73,17 @@ export class TitleBarComponent implements OnInit {
     onPop(evt: PopStateEvent) {
         this.drawerPosition = 0
     }
-
-    onTouchstart(evt: TouchEvent) {
-        if (evt.touches.length == 1 &&  evt.touches[0].clientX < 15) {
-
+    
+    onTouchstart(evt: TouchEvent, isOpen: boolean) {
+        if ( (!isOpen && evt.touches.length == 1 &&  evt.touches[0].clientX < 15)
+            || isOpen) {
             const width = window.document.body.clientWidth
             const drawerWidth = width * 79 / 100
 
-            this.drawerPosition = 0.05
+            if (!isOpen)
+                this.drawerPosition = 0.05
+            else
+                this.drawerPosition = 1
             const initialX = evt.touches[0].clientX
             const initialY = evt.touches[0].clientY
 
@@ -90,7 +93,7 @@ export class TitleBarComponent implements OnInit {
                 if (drawerOffset == -1) {
 
                     // drawer is initially 5% visible: drawerWidth * 5 / 100
-                    const initial = drawerWidth * 5 / 100
+                    const initial = !isOpen ? drawerWidth * 5 / 100 : drawerWidth
                     drawerOffset = initial - evt.touches[0].clientX
 
                     const diffx = evt.touches[0].clientX - initialX
@@ -99,7 +102,8 @@ export class TitleBarComponent implements OnInit {
                     if (Math.abs(ratio) < 2) {
                         window.removeEventListener('touchmove', touchmove, true)
                         window.removeEventListener('touchend', touchend, true)
-                        this.drawerPosition = 0
+                        if (!isOpen)
+                            this.drawerPosition = 0
                         evt.preventDefault()
                         evt.stopPropagation()
                         return

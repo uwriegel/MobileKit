@@ -20,8 +20,115 @@ export class TitleBarComponent implements OnInit {
     _drawerPosition = 0
     actualDrawerPosition = 0
 
-    private setPoint = 0
-    transform(setPoint: number): any {
+    constructor() { }
+
+    ngOnInit() { }
+
+    onOpenDrawer() {
+        this.drawerPosition = 1
+        history.pushState("drawer", null, '/drawer')
+    }
+
+    onPop(evt: PopStateEvent) {
+        this.drawerPosition = 0
+    }
+    
+    onTouchstart(evt: TouchEvent, isOpen: boolean) {
+        if ( (!isOpen && evt.touches.length == 1 && evt.touches[0].clientX < 15 &&  evt.touches[0].clientY > 55)
+            || isOpen) {
+            const width = window.document.body.clientWidth
+            const drawerWidth = width * 79 / 100
+
+            if (!isOpen) 
+                this.drawerPosition = 0.05
+            else
+                this.drawerPosition = 1
+            const initialX = evt.touches[0].clientX
+            const initialY = evt.touches[0].clientY
+
+            let drawerOffset = -1 
+            let diffDistance = 0
+            let diffTime = 0
+            let recentX = 0
+            let recentTimestamp = 0
+
+            const touchmove = (evt: TouchEvent) => {
+                if (drawerOffset == -1) {
+
+                    // drawer is initially 5% visible: drawerWidth * 5 / 100
+                    const initial = !isOpen ? drawerWidth * 5 / 100 : drawerWidth
+                    drawerOffset = initial - evt.touches[0].clientX
+
+                    const diffx = evt.touches[0].clientX - initialX
+                    const diffy = evt.touches[0].clientY - initialY
+
+                    const ratio = diffx / diffy 
+                    if (Math.abs(ratio) < 2) {
+                        window.removeEventListener('touchmove', touchmove, true)
+                        window.removeEventListener('touchend', touchend, true)
+                        if (!isOpen)
+                            this.drawerPosition = 0
+                        evt.preventDefault()
+                        evt.stopPropagation()
+                        return
+                    }
+                }
+
+                recentX = evt.touches[0].clientX
+                recentTimestamp = evt.timeStamp
+
+                let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
+                if (position > 100)
+                    position = 100
+                this.drawerPosition = position / 100
+
+                evt.preventDefault()
+                evt.stopPropagation()
+            }
+
+            const touchend = (evt: TouchEvent) => {
+
+                window.removeEventListener('touchmove', touchmove, true)
+                window.removeEventListener('touchend', touchend, true)
+
+                let position = (evt.changedTouches[0].clientX + drawerOffset) / drawerWidth * 100
+                if (position > 100)
+                    position = 100
+                this.drawerPosition = position / 100
+
+                diffDistance = (evt.changedTouches[0].clientX - recentX) / drawerWidth * 100
+                diffTime = evt.timeStamp - recentTimestamp
+                const fling = diffDistance / diffTime
+                console.log("Fling", fling)                
+                if (fling > 0.1) {
+                    
+                }
+                else {
+
+                    if (this.drawerPosition >= 0.5) {
+                        this.drawerPosition = 1
+                        if (!isOpen)
+                            history.pushState("drawer", null, '/drawer')
+                    }
+                    else {
+                        this.drawerPosition = 0
+                        if (isOpen) 
+                            history.back()
+                    }
+                }
+
+                evt.preventDefault()
+                evt.stopPropagation()
+            }                
+            window.addEventListener('touchmove', touchmove, true)
+            window.addEventListener('touchend', touchend, true)
+
+            evt.preventDefault()
+            evt.stopPropagation()
+        }
+    }
+
+    private transform(setPoint: number): any {
 
         if (this.setPoint != setPoint) {
             let previousSetPoint = this.setPoint
@@ -57,89 +164,5 @@ export class TitleBarComponent implements OnInit {
         }
     }
 
-
-
-
-
-    constructor() { }
-
-    ngOnInit() { }
-
-    onOpenDrawer() {
-        this.drawerPosition = 1
-        history.pushState("drawer", null, '/drawer')
-    }
-
-    onPop(evt: PopStateEvent) {
-        this.drawerPosition = 0
-    }
-    
-    onTouchstart(evt: TouchEvent, isOpen: boolean) {
-        if ( (!isOpen && evt.touches.length == 1 && evt.touches[0].clientX < 15 &&  evt.touches[0].clientY > 55)
-            || isOpen) {
-            const width = window.document.body.clientWidth
-            const drawerWidth = width * 79 / 100
-
-            if (!isOpen) 
-                this.drawerPosition = 0.05
-            else
-                this.drawerPosition = 1
-            const initialX = evt.touches[0].clientX
-            const initialY = evt.touches[0].clientY
-
-            let drawerOffset = -1 
-
-            const touchmove = (evt: TouchEvent) => {
-                if (drawerOffset == -1) {
-
-                    // drawer is initially 5% visible: drawerWidth * 5 / 100
-                    const initial = !isOpen ? drawerWidth * 5 / 100 : drawerWidth
-                    drawerOffset = initial - evt.touches[0].clientX
-
-                    const diffx = evt.touches[0].clientX - initialX
-                    const diffy = evt.touches[0].clientY - initialY
-                    const ratio = diffx / diffy 
-                    if (Math.abs(ratio) < 2) {
-                        window.removeEventListener('touchmove', touchmove, true)
-                        window.removeEventListener('touchend', touchend, true)
-                        if (!isOpen)
-                            this.drawerPosition = 0
-                        evt.preventDefault()
-                        evt.stopPropagation()
-                        return
-                    }
-                }
-
-                let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
-                if (position > 100)
-                    position = 100
-                this.drawerPosition = position / 100
-
-                evt.preventDefault()
-                evt.stopPropagation()
-            }
-
-            const touchend = (evt: TouchEvent) => {
-                window.removeEventListener('touchmove', touchmove, true)
-                window.removeEventListener('touchend', touchend, true)
-
-                if (this.drawerPosition > 0.5) {
-                    this.drawerPosition = 1
-                    history.pushState("drawer", null, '/drawer')
-                }
-                else {
-                    this.drawerPosition = 0
-                    history.back()
-                }
-
-                evt.preventDefault()
-                evt.stopPropagation()
-            }                
-            window.addEventListener('touchmove', touchmove, true)
-            window.addEventListener('touchend', touchend, true)
-
-            evt.preventDefault()
-            evt.stopPropagation()
-        }
-    }
+    private setPoint = 0
 }

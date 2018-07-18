@@ -12,6 +12,10 @@ export class TitleBarComponent implements OnInit {
     @Input() title = ""
     @Input() withDrawer = false
 
+    // TODO: DrawerPosition is always the binded value of the drawer's position 
+    // TODO: this.drawerPosition = 0 => animate(0)
+    // Touchmove: this.drawerPosition = position
+    // fling: this.drawerPosition = fling(v, diff)
     get drawerPosition() { return this._drawerPosition}
     set drawerPosition(value: number) {
         this._drawerPosition = value

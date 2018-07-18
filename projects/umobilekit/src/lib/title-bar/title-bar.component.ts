@@ -101,7 +101,18 @@ export class TitleBarComponent implements OnInit {
                 const fling = diffDistance / diffTime
                 console.log("Fling", fling)                
                 if (fling > 0.1) {
-                    
+                    const animate = (timestamp: number) => {
+                        console.log("Mal sehen", timestamp)
+                        diffTime = timestamp - recentTimestamp
+                        recentTimestamp = timestamp
+                        this.drawerPosition = fling * diffTime 
+                        if (this.drawerPosition > 1)
+                            this.drawerPosition = 1
+                        else
+                            requestAnimationFrame(animate)
+                    }
+                    requestAnimationFrame(animate)
+                    console.log("Mal sehen?", evt.timeStamp)
                 }
                 else {
 

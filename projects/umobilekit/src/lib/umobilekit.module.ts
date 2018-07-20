@@ -5,7 +5,6 @@ import { ScrollerComponent } from './scroller/scroller.component'
 import { TitleBarComponent } from './title-bar/title-bar.component'
 import { TitleButtonComponent } from './title-button/title-button.component'
 import { MenuListComponent } from './svgs/menu-list/menu-list.component'
-import { TranslateDrawerPositionPipe } from './pipes/translate-drawer-position.pipe'
 
 @NgModule({
     imports: [ 
@@ -16,8 +15,7 @@ import { TranslateDrawerPositionPipe } from './pipes/translate-drawer-position.p
         ScrollerComponent, 
         TitleBarComponent, 
         TitleButtonComponent, 
-        MenuListComponent, 
-        TranslateDrawerPositionPipe
+        MenuListComponent
     ],
     exports: [
         ScrollerComponent,

@@ -1,40 +1,13 @@
-import { Component, OnInit, Input } from '@angular/core'
+import { Component, Input, ElementRef } from '@angular/core'
 import { PopStateEvent } from '@angular/common'
-import { trigger, transition, style, animate, state } from '@angular/animations'
 import { ScrollerComponent } from '../scroller/scroller.component'
 
 @Component({
     selector: 'mk-title-bar',
     templateUrl: './title-bar.component.html',
-    styleUrls: ['./title-bar.component.css'],
-    animations: [
-        trigger('shader', [
-            state("open", style({ opacity: '{{offset100}}' }),
-            {
-                params: {offset100: 0 }
-            }),
-            transition('void => open', [ style({ opacity: 0 }),
-                animate("300ms ease-out"),
-            ]),
-            transition('open => void', 
-                [ animate("300ms ease-out", style({ opacity: 0 }))]),
-        ]),            
-        trigger('transitionMode', [
-            state("void", style({ transform: 'translateX(-{{offsetClosed}}%)' }), {
-                params: {offsetClosed: 0 }
-            }),
-            state("open", style({ transform: 'translateX(-{{offset}}%)' }),          
-            {
-                params: {offset: 0 }
-            }),
-            transition('void => open', animate("300ms ease-out")),
-            transition('open => void', [
-                style({ transform: 'translateX(-{{offset}}%)' }),
-                animate("300ms ease-out")], { params: {offset:0}}),
-        ])            
-    ]            
+    styleUrls: ['./title-bar.component.css']
 })
-export class TitleBarComponent implements OnInit {
+export class TitleBarComponent {
 
     @Input() title = ""
     @Input() withDrawer = false
@@ -48,9 +21,12 @@ export class TitleBarComponent implements OnInit {
     // fling: this.drawerPosition = fling(v, diff)
     drawerOpen = false
 
-    constructor() { }
-
-    ngOnInit() { }
+    constructor(private host: ElementRef) { 
+        this.observer.observe(this.host.nativeElement, {
+            subtree: true,
+            childList: true
+        })
+    }
 
     onOpenDrawer() {
         this.drawerOpen = true
@@ -259,6 +235,17 @@ export class TitleBarComponent implements OnInit {
             evt.stopPropagation()        
         }
     }
+
+    private readonly observer = new MutationObserver(mutations => {
+
+        console.log("Host", this.host.nativeElement)
+        setTimeout(() => console.log("Host32", this.host.nativeElement.getElementsByClassName("shader")[0]))
+        
+        console.log("Host2", this.host.nativeElement.getElementsByClassName("shader")[0])
+
+        this.host.nativeElement.getElementsByClassName("shader")[0].style.opacity = "0"
+        console.log("Jetzt!")
+    })
 
     //private transform(setPoint: number): any {
 

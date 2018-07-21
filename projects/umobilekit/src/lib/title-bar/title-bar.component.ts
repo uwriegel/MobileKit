@@ -9,66 +9,23 @@ import { ScrollerComponent } from '../scroller/scroller.component'
     styleUrls: ['./title-bar.component.css'],
     animations: [
         trigger('shader', [
-            state("manual", 
-                style({
-                    opacity: 0.05
-                })),
-            state("automatic", 
-                style({
-                    opacity: 1
-                })),
-            transition('void => manual', [
-                style({
-                    opacity: 0
-                }),
-                animate("150ms"),
-            ]),
-            transition('manual => void', [
-                animate("150ms ease-out",
-                style({
-                    opacity: 0
-                }))            
-            ]),            
-            transition('void => automatic', [
-                style({
-                    opacity: 0
-                }),
+            state("open", style({ opacity:    0 })),
+            transition('void => open', [ style({ opacity: 0 }),
                 animate("300ms ease-out"),
             ]),
-            transition('automatic => void', [
-                animate("300ms ease-out",
-                style({
-                    opacity: 0
-                }))            
-            ]),
+            transition('open => void', 
+                [ animate("300ms ease-out", style({ opacity: 0 }))]),
         ]),            
         trigger('transitionMode', [
-            state("manual", 
-                style({
-                    transform: 'translateX(-95%)'
-                })),
-            state("automatic", 
-                style({
-                    transform: 'translateX(0%)'
-                })),
-            transition('void => manual', [
-                style({
-                    transform: 'translateX(-100%)'
-                }),
-                animate("150ms"),
-            ]),
-            transition('void => automatic', [
-                style({
-                    transform: 'translateX(-100%)'
-                }),
-                animate("300ms ease-out"),
-            ]),
-            transition('automatic => void', [
-                animate("300ms ease-out",
-                style({
-                    transform: 'translateX(-100%)'
-                }))            
-            ]),
+            state("void", style({ transform: 'translateX(-100%)' })),
+            state("open", style({ transform: 'translateX(-{{offset}}%)' }),          
+            {
+                params: {offset: 0 }
+            }),
+            transition('void => open', animate("2000ms ease-out")),
+            transition('open => void', [
+                style({ transform: 'translateX(-{{offset2}}%)' }),
+                animate("2000ms ease-out")], { params: {offset2:0}}),
         ])            
     ]            
 })
@@ -76,14 +33,14 @@ export class TitleBarComponent implements OnInit {
 
     @Input() title = ""
     @Input() withDrawer = false
+    drawerOffset = 0
+    do = 0
 
     // TODO: DrawerPosition is always the binded value of the drawer's position 
     // TODO: this.drawerPosition = 0 => animate(0)
     // Touchmove: this.drawerPosition = position
     // fling: this.drawerPosition = fling(v, diff)
     drawerOpen = false
-    //transitionMode = 'manual'
-    transitionMode = 'automatic'
 
     constructor() { }
 
@@ -213,7 +170,8 @@ export class TitleBarComponent implements OnInit {
             const drawerWidth = width * 79 / 100
             console.log("drawerWidth", drawerWidth)
             
-            this.transitionMode = 'manual'
+            this.do = 0
+            this.drawerOffset = 95
             this.drawerOpen = true
 
             const initialX = evt.touches[0].clientX
@@ -224,42 +182,48 @@ export class TitleBarComponent implements OnInit {
             const touchmove = (evt: TouchEvent) => {
                 if (drawerOffset == -1) {
             
-                // drawer is initially 5% visible: drawerWidth * 5 / 100
-                const initial = drawerWidth * 5 / 100
-                drawerOffset = initial - evt.touches[0].clientX
-            
-                const diffx = evt.touches[0].clientX - initialX
-                const diffy = evt.touches[0].clientY - initialY
-                const ratio = diffx / diffy 
-                if (Math.abs(ratio) < 2) {
-                    window.removeEventListener('touchmove', touchmove, true)
-                    window.removeEventListener('touchend', touchend, true)
-                    this.transitionMode = 'automatic'
-                    this.drawerOpen = false
-                        evt.preventDefault()
-                        evt.stopPropagation()
-                        return
-                    }
-                }
+                    // drawer is initially 5% visible: drawerWidth * 5 / 100
+                    const initial = drawerWidth * 5 / 100
+                    drawerOffset = initial - evt.touches[0].clientX
                 
-                let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
-                if (position > 100)
-                    position = 100
-                console.log("Position", position)
-                const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
-                drawer.style.transform = `translateX(${(position - 100)}%)`
-                const shader = document.getElementsByClassName("shader")[0] as HTMLElement
-                shader.style.opacity = `${(position / 100)}`
+                    const diffx = evt.touches[0].clientX - initialX
+                    const diffy = evt.touches[0].clientY - initialY
+                    const ratio = diffx / diffy 
+                    if (Math.abs(ratio) < 2) {
+                        window.removeEventListener('touchmove', touchmove, true)
+                        window.removeEventListener('touchend', touchend, true)
+                        this.drawerOpen = false
+                            evt.preventDefault()
+                            evt.stopPropagation()
+                            return
+                        }
+                    }
+                    
+                    let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
+                    if (position > 100)
+                        position = 100
+                    console.log("Position", position)
+                    const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
+                    drawer.style.transform = `translateX(${(position - 100)}%)`
+                    const shader = document.getElementsByClassName("shader")[0] as HTMLElement
+                    shader.style.opacity = `${(position / 100)}`
 
-                evt.preventDefault()
-                evt.stopPropagation()
-            }
+                    evt.preventDefault()
+                    evt.stopPropagation()
+                }
 
             const touchend = (evt: TouchEvent) => {
                 window.removeEventListener('touchmove', touchmove, true)
                 window.removeEventListener('touchend', touchend, true)
-                this.transitionMode = 'automatic'
-                this.drawerOpen = false
+                this.do = 50
+                this.drawerOffset = 50
+                setTimeout(() => this.drawerOpen = false)
+
+                setTimeout(() => {
+                    this.do = 0
+                    this.drawerOffset = 0
+                }, 2020)
+
                 evt.preventDefault()
                 evt.stopPropagation()
             }                
@@ -270,7 +234,7 @@ export class TitleBarComponent implements OnInit {
             evt.stopPropagation()        
         }
     }
-    
+
     //private transform(setPoint: number): any {
 
         // if (this.setPoint != setPoint) {

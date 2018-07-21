@@ -9,7 +9,10 @@ import { ScrollerComponent } from '../scroller/scroller.component'
     styleUrls: ['./title-bar.component.css'],
     animations: [
         trigger('shader', [
-            state("open", style({ opacity:    0 })),
+            state("open", style({ opacity: '{{offset100}}' }),
+            {
+                params: {offset100: 0 }
+            }),
             transition('void => open', [ style({ opacity: 0 }),
                 animate("300ms ease-out"),
             ]),
@@ -17,15 +20,17 @@ import { ScrollerComponent } from '../scroller/scroller.component'
                 [ animate("300ms ease-out", style({ opacity: 0 }))]),
         ]),            
         trigger('transitionMode', [
-            state("void", style({ transform: 'translateX(-100%)' })),
+            state("void", style({ transform: 'translateX(-{{offsetClosed}}%)' }), {
+                params: {offsetClosed: 0 }
+            }),
             state("open", style({ transform: 'translateX(-{{offset}}%)' }),          
             {
                 params: {offset: 0 }
             }),
-            transition('void => open', animate("2000ms ease-out")),
+            transition('void => open', animate("300ms ease-out")),
             transition('open => void', [
-                style({ transform: 'translateX(-{{offset2}}%)' }),
-                animate("2000ms ease-out")], { params: {offset2:0}}),
+                style({ transform: 'translateX(-{{offset}}%)' }),
+                animate("300ms ease-out")], { params: {offset:0}}),
         ])            
     ]            
 })
@@ -34,7 +39,8 @@ export class TitleBarComponent implements OnInit {
     @Input() title = ""
     @Input() withDrawer = false
     drawerOffset = 0
-    do = 0
+    offsetClosed = 100
+    get drawerOffset100() { return (100 - this.drawerOffset) / 100 }
 
     // TODO: DrawerPosition is always the binded value of the drawer's position 
     // TODO: this.drawerPosition = 0 => animate(0)
@@ -166,11 +172,8 @@ export class TitleBarComponent implements OnInit {
         if (evt.touches.length == 1 && evt.touches[0].clientX < 15) {
             
             const width = window.document.body.clientWidth
-            console.log("Weit", width)
             const drawerWidth = width * 79 / 100
-            console.log("drawerWidth", drawerWidth)
             
-            this.do = 0
             this.drawerOffset = 95
             this.drawerOpen = true
 
@@ -202,7 +205,7 @@ export class TitleBarComponent implements OnInit {
                     let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
                     if (position > 100)
                         position = 100
-                    console.log("Position", position)
+
                     const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
                     drawer.style.transform = `translateX(${(position - 100)}%)`
                     const shader = document.getElementsByClassName("shader")[0] as HTMLElement
@@ -215,14 +218,36 @@ export class TitleBarComponent implements OnInit {
             const touchend = (evt: TouchEvent) => {
                 window.removeEventListener('touchmove', touchmove, true)
                 window.removeEventListener('touchend', touchend, true)
-                this.do = 50
-                this.drawerOffset = 50
-                setTimeout(() => this.drawerOpen = false)
+
+                let position = (evt.changedTouches[0].clientX + drawerOffset) / drawerWidth * 100
+                if (position > 100)
+                    position = 100
+                this.drawerOffset = 100 - position
+
+
+
+
+                
+                if (this.drawerOffset < 50) {
+                    //this.drawerOffset = 0
+                    setTimeout(() => {
+                        this.drawerOpen = false
+                        setTimeout(() => {
+                            this.drawerOffset = 0
+                            this.drawerOpen = true
+                        })
+                    })
+                    
+                }
+                else
+                    setTimeout(() => this.drawerOpen = false)
+        //                     history.pushState("drawer", null, '/drawer')
+                    
 
                 setTimeout(() => {
-                    this.do = 0
                     this.drawerOffset = 0
-                }, 2020)
+                    this.drawerOpen = true
+                }, 320)
 
                 evt.preventDefault()
                 evt.stopPropagation()

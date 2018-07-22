@@ -26,14 +26,13 @@ mk-menu-list {
 
 .drawer {
     position: fixed;
-    background: yellowgreen;
     height: 100%;
     top: 0px;
     width: 79%;
     display: flex;
 
-    transform: "translate(-100%)";
-    transition: "transform 0.3s";
+    transform: translate(-100%);
+    transition: transform 0.3s;
 }
 
 .shader {
@@ -43,7 +42,10 @@ mk-menu-list {
     width: 100%;
     background-color: rgba(0, 0, 0, 0.65);
 
-    opacity: 0px;
-    transition: "opacity 0.3s";
+    opacity: 0;
+    transition: opacity 0.3s;
 }
 
+.isHidden {
+    display: none;
+}

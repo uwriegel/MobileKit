@@ -19,19 +19,13 @@ export class TitleBarComponent {
     // TODO: this.drawerPosition = 0 => animate(0)
     // Touchmove: this.drawerPosition = position
     // fling: this.drawerPosition = fling(v, diff)
-    drawerOpen = false
 
-    constructor(private host: ElementRef) { 
-        this.observer.observe(this.host.nativeElement, {
-            subtree: true,
-            childList: true
-        })
-    }
+    constructor(private host: ElementRef) {}
+
 
     onOpenDrawer() {
-        this.drawerOpen = true
+        this.openDrawer()
         setTimeout(n => ScrollerComponent.refresh())
-        history.pushState("drawer", null, '/drawer')    
     }
 
     onPop(evt: PopStateEvent) {
@@ -236,20 +230,21 @@ export class TitleBarComponent {
         //}
     }
 
-    private readonly observer = new MutationObserver(mutations => {
-        if (this.drawerOpen) {
-            const shader = this.host.nativeElement.getElementsByClassName("shader")[0] as HTMLElement
-            const drawer = this.host.nativeElement.getElementsByClassName("drawer")[0] as HTMLElement
-            shader.style.opacity = "0"
-            shader.style.transition = "opacity 0.3s"
-            drawer.style.transform = `translate(-100%)`
-            drawer.style.transition = "transform 0.3s"
-            setTimeout(() => {
-                shader.style.opacity = "1"         
-                drawer.style.transform = `translate(0%)`
-            })
-        }
-    })
+    private openDrawer() {
+        history.pushState("drawer", null, '/drawer')    
+        const shader = this.host.nativeElement.getElementsByClassName("shader")[0] as HTMLElement
+        const drawer = this.host.nativeElement.getElementsByClassName("drawer")[0] as HTMLElement
+        shader.classList.remove("isHidden")
+        shader.style.opacity = "0"
+        shader.style.transition = "opacity 0.3s"
+        drawer.classList.remove("isHidden")
+        drawer.style.transform = `translate(-100%)`
+        drawer.style.transition = "transform 0.3s"
+        setTimeout(() => {
+            shader.style.opacity = "1"         
+            drawer.style.transform = `translate(0%)`
+        })
+    }
 
     private closeDrawer() {
         const shader = this.host.nativeElement.getElementsByClassName("shader")[0] as HTMLElement
@@ -263,7 +258,8 @@ export class TitleBarComponent {
             drawer.style.transform = `translate(-100%)`
             const transitionend = () => {
                 drawer.removeEventListener("transitionend", transitionend);
-                this.drawerOpen = false
+                shader.classList.add("isHidden")
+                drawer.classList.add("isHidden")
             }
     
             drawer.addEventListener("transitionend", transitionend)            

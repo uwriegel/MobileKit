@@ -35,7 +35,7 @@ export class TitleBarComponent {
     }
 
     onPop(evt: PopStateEvent) {
-        this.drawerOpen = false
+        this.closeDrawer()
     }
     
     //onTouchstart(evt: TouchEvent, isOpen: boolean) {
@@ -145,107 +145,132 @@ export class TitleBarComponent {
     //}
 
     onTouchstart(evt: TouchEvent) {
-        if (evt.touches.length == 1 && evt.touches[0].clientX < 15) {
+        // if (evt.touches.length == 1 && evt.touches[0].clientX < 15) {
             
-            const width = window.document.body.clientWidth
-            const drawerWidth = width * 79 / 100
+        //     const width = window.document.body.clientWidth
+        //     const drawerWidth = width * 79 / 100
             
-            this.drawerOffset = 95
-            this.drawerOpen = true
+        //     this.drawerOffset = 95
+        //     this.drawerOpen = true
 
-            const initialX = evt.touches[0].clientX
-            const initialY = evt.touches[0].clientY
+        //     const initialX = evt.touches[0].clientX
+        //     const initialY = evt.touches[0].clientY
             
-            let drawerOffset = -1 
+        //     let drawerOffset = -1 
             
-            const touchmove = (evt: TouchEvent) => {
-                if (drawerOffset == -1) {
+        //     const touchmove = (evt: TouchEvent) => {
+        //         if (drawerOffset == -1) {
             
-                    // drawer is initially 5% visible: drawerWidth * 5 / 100
-                    const initial = drawerWidth * 5 / 100
-                    drawerOffset = initial - evt.touches[0].clientX
+        //             // drawer is initially 5% visible: drawerWidth * 5 / 100
+        //             const initial = drawerWidth * 5 / 100
+        //             drawerOffset = initial - evt.touches[0].clientX
                 
-                    const diffx = evt.touches[0].clientX - initialX
-                    const diffy = evt.touches[0].clientY - initialY
-                    const ratio = diffx / diffy 
-                    if (Math.abs(ratio) < 2) {
-                        window.removeEventListener('touchmove', touchmove, true)
-                        window.removeEventListener('touchend', touchend, true)
-                        this.drawerOpen = false
-                            evt.preventDefault()
-                            evt.stopPropagation()
-                            return
-                        }
-                    }
+        //             const diffx = evt.touches[0].clientX - initialX
+        //             const diffy = evt.touches[0].clientY - initialY
+        //             const ratio = diffx / diffy 
+        //             if (Math.abs(ratio) < 2) {
+        //                 window.removeEventListener('touchmove', touchmove, true)
+        //                 window.removeEventListener('touchend', touchend, true)
+        //                 this.drawerOpen = false
+        //                     evt.preventDefault()
+        //                     evt.stopPropagation()
+        //                     return
+        //                 }
+        //             }
                     
-                    let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
-                    if (position > 100)
-                        position = 100
+        //             let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
+        //             if (position > 100)
+        //                 position = 100
 
-                    const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
-                    drawer.style.transform = `translateX(${(position - 100)}%)`
-                    const shader = document.getElementsByClassName("shader")[0] as HTMLElement
-                    shader.style.opacity = `${(position / 100)}`
+        //             const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
+        //             drawer.style.transform = `translateX(${(position - 100)}%)`
+        //             const shader = document.getElementsByClassName("shader")[0] as HTMLElement
+        //             shader.style.opacity = `${(position / 100)}`
 
-                    evt.preventDefault()
-                    evt.stopPropagation()
-                }
+        //             evt.preventDefault()
+        //             evt.stopPropagation()
+        //         }
 
-            const touchend = (evt: TouchEvent) => {
-                window.removeEventListener('touchmove', touchmove, true)
-                window.removeEventListener('touchend', touchend, true)
+        //     const touchend = (evt: TouchEvent) => {
+        //         window.removeEventListener('touchmove', touchmove, true)
+        //         window.removeEventListener('touchend', touchend, true)
 
-                let position = (evt.changedTouches[0].clientX + drawerOffset) / drawerWidth * 100
-                if (position > 100)
-                    position = 100
-                this.drawerOffset = 100 - position
+        //         let position = (evt.changedTouches[0].clientX + drawerOffset) / drawerWidth * 100
+        //         if (position > 100)
+        //             position = 100
+        //         this.drawerOffset = 100 - position
 
 
 
 
                 
-                if (this.drawerOffset < 50) {
-                    //this.drawerOffset = 0
-                    setTimeout(() => {
-                        this.drawerOpen = false
-                        setTimeout(() => {
-                            this.drawerOffset = 0
-                            this.drawerOpen = true
-                        })
-                    })
+        //         if (this.drawerOffset < 50) {
+        //             //this.drawerOffset = 0
+        //             setTimeout(() => {
+        //                 this.drawerOpen = false
+        //                 setTimeout(() => {
+        //                     this.drawerOffset = 0
+        //                     this.drawerOpen = true
+        //                 })
+        //             })
                     
-                }
-                else
-                    setTimeout(() => this.drawerOpen = false)
-        //                     history.pushState("drawer", null, '/drawer')
+        //         }
+        //         else
+        //             setTimeout(() => this.drawerOpen = false)
+        // //                     history.pushState("drawer", null, '/drawer')
                     
 
-                setTimeout(() => {
-                    this.drawerOffset = 0
-                    this.drawerOpen = true
-                }, 320)
+        //         setTimeout(() => {
+        //             this.drawerOffset = 0
+        //             this.drawerOpen = true
+        //         }, 320)
 
-                evt.preventDefault()
-                evt.stopPropagation()
-            }                
-            window.addEventListener('touchmove', touchmove, true)
-            window.addEventListener('touchend', touchend, true)
+        //         evt.preventDefault()
+        //         evt.stopPropagation()
+        //     }                
+        //     window.addEventListener('touchmove', touchmove, true)
+        //     window.addEventListener('touchend', touchend, true)
         
-            evt.preventDefault()
-            evt.stopPropagation()        
-        }
+        //     evt.preventDefault()
+        //     evt.stopPropagation()        
+        //}
     }
 
     private readonly observer = new MutationObserver(mutations => {
-
-        console.log("Host", this.host.nativeElement)
-        setTimeout(() => console.log("Host32", this.host.nativeElement.getElementsByClassName("shader")[0]))
-        
-        console.log("Host2", this.host.nativeElement.getElementsByClassName("shader")[0])
-
-        this.host.nativeElement.getElementsByClassName("shader")[0].style.opacity = "0"
-        console.log("Jetzt!")
+        if (this.drawerOpen) {
+            const shader = this.host.nativeElement.getElementsByClassName("shader")[0] as HTMLElement
+            const drawer = this.host.nativeElement.getElementsByClassName("drawer")[0] as HTMLElement
+            shader.style.opacity = "0"
+            shader.style.transition = "opacity 0.3s"
+            drawer.style.transform = `translate(-100%)`
+            drawer.style.transition = "transform 0.3s"
+            setTimeout(() => {
+                shader.style.opacity = "1"         
+                drawer.style.transform = `translate(0%)`
+            })
+        }
     })
+
+    private closeDrawer() {
+        const shader = this.host.nativeElement.getElementsByClassName("shader")[0] as HTMLElement
+        const drawer = this.host.nativeElement.getElementsByClassName("drawer")[0] as HTMLElement
+        shader.style.opacity = "1"
+        shader.style.transition = "opacity 0.3s"
+        drawer.style.transform = `translate(0%)`
+        drawer.style.transition = "transform 0.3s"
+        setTimeout(() => {
+            shader.style.opacity = "0"         
+            drawer.style.transform = `translate(-100%)`
+            const transitionend = () => {
+                drawer.removeEventListener("transitionend", transitionend);
+                this.drawerOpen = false
+            }
+    
+            drawer.addEventListener("transitionend", transitionend)            
+        })
+    }
+    
+
 
     //private transform(setPoint: number): any {
 

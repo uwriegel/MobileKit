@@ -9,12 +9,22 @@ import { ScrollerComponent } from '../scroller/scroller.component'
     styleUrls: ['./title-bar.component.css'],
     animations: [
         trigger('shader', [
-            state("open", style({ opacity:    0 })),
-            transition('void => open', [ style({ opacity: 0 }),
-                animate("300ms ease-out"),
-            ]),
-            transition('open => void', 
-                [ animate("300ms ease-out", style({ opacity: 0 }))]),
+            state("void", style({ opacity: '{{opacityClosed}}' }),
+            {
+                params: {opacityClosed: 0 }
+            }),
+            state("open", style({ opacity: '{{opacityOpened}}' }),          
+            {
+                params: {opacityOpened: 1 }
+            }),
+            state("transition", style({ opacity: '{{opacityTransition}}' }),          
+            {
+                params: {opacityTransition: 1 }
+            }),
+            transition('void => *', animate("{{duration}}ms ease-out"), { params: { duration: 300}}),
+            transition('* => void', animate("{{duration}}ms ease-out"), { params: { duration: 300}}),
+            transition('* => transition', animate("0ms ease-out")),
+            transition('transition => open', animate("{{duration}}ms ease-out"), { params: { duration: 300}}),
         ]),            
         trigger('transitionMode', [
             state("void", style({ transform: 'translateX(-{{offsetClosed}}%)' }),
@@ -43,6 +53,11 @@ export class TitleBarComponent {
     offsetClosed = 100
     offsetOpened = 0
     offsetTransition = 0
+    
+    opacityClosed = 0
+    opacityOpened = 1
+    opacityTransition = 1
+    
     transitionState = 'open'
 
     // TODO: DrawerPosition is always the binded value of the drawer's position 
@@ -56,6 +71,8 @@ export class TitleBarComponent {
     onOpenDrawer() {
         this.offsetClosed = 100
         this.offsetOpened = 0
+        this.opacityClosed = 0
+        this.opacityOpened = 1
         this.transitionState = 'open'
         this.drawerOpen = true
         setTimeout(n => ScrollerComponent.refresh())
@@ -65,6 +82,8 @@ export class TitleBarComponent {
     onPop(evt: PopStateEvent) {
         this.offsetClosed = 100
         this.offsetOpened = 0
+        this.opacityClosed = 0
+        this.opacityOpened = 1
         this.transitionState = 'open'
         setTimeout(() => this.drawerOpen = false)
     }
@@ -169,6 +188,8 @@ export class TitleBarComponent {
             
             this.offsetClosed = 100
             this.offsetOpened = 95
+            this.opacityClosed = 0
+            this.opacityOpened = 0.05
             this.drawerOpen = true
 
             const initialX = evt.touches[0].clientX
@@ -219,6 +240,8 @@ export class TitleBarComponent {
                 if (position < 50) {
                     this.offsetClosed = 100
                     this.offsetOpened = 100 - position
+                    this.opacityClosed = 0
+                    this.opacityOpened = position / 100
                     setTimeout(() => this.drawerOpen = false)
                 }
                 else {
@@ -226,13 +249,19 @@ export class TitleBarComponent {
                     history.pushState("drawer", null, '/drawer')  
                     this.offsetClosed = 100 - position
                     this.offsetOpened = 100 - position
-                    this.offsetTransition = 100 - position
+                    this.opacityClosed = position / 100
+                    this.opacityOpened = position / 100
+                    this.offsetTransition = 100 - position 
+                    this.opacityTransition = position / 100
+
                     setTimeout(() => {
                         this.transitionState = 'transition'
-                    })
-                    setTimeout(() => {
                         this.offsetClosed = 100 - position
                         this.offsetOpened = 0
+                        this.opacityClosed = position / 100
+                        this.opacityOpened = 1
+                    })
+                    setTimeout(() => {
                         this.transitionState = 'open'
                     })
                 }

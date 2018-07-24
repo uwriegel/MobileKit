@@ -4,8 +4,7 @@ import { CommonModule } from '@angular/common'
 import { ScrollerComponent } from './scroller/scroller.component'
 import { TitleBarComponent } from './title-bar/title-bar.component'
 import { TitleButtonComponent } from './title-button/title-button.component'
-import { MenuListComponent } from './svgs/menu-list/menu-list.component';
-import { FromPercentPipe } from './pipes/from-percent.pipe'
+import { MenuListComponent } from './svgs/menu-list/menu-list.component'
 
 @NgModule({
     imports: [ 
@@ -16,7 +15,7 @@ import { FromPercentPipe } from './pipes/from-percent.pipe'
         ScrollerComponent, 
         TitleBarComponent, 
         TitleButtonComponent, 
-        MenuListComponent, FromPercentPipe
+        MenuListComponent
     ],
     exports: [
         ScrollerComponent,

@@ -60,6 +60,7 @@ export class TitleBarComponent {
     
     transitionState = 'open'
 
+    // TODO: click on drawer closes it
     // TODO: History when manually touched to close
     // TODO: adapt durations
     // TODO: fling

@@ -58,12 +58,12 @@ export class TitleBarComponent {
     opacityOpened = 1
     opacityTransition = 1
     
+    duration = 300
     transitionState = 'open'
 
-    // TODO: click on drawer closes it
-    // TODO: History when manually touched to close
-    // TODO: adapt durations
+    // TODO: too fast when not opening manually
     // TODO: fling
+    // TODO: History when manually touched to close
     drawerOpen = false
 
     constructor() {}
@@ -74,6 +74,7 @@ export class TitleBarComponent {
         this.opacityClosed = 0
         this.opacityOpened = 1
         this.transitionState = 'open'
+        this.duration = 300
         this.drawerOpen = true
         setTimeout(n => ScrollerComponent.refresh())
         history.pushState("drawer", null, '/drawer')  
@@ -84,6 +85,7 @@ export class TitleBarComponent {
         this.offsetOpened = 0
         this.opacityClosed = 0
         this.opacityOpened = 1
+        this.duration = 300
         this.transitionState = 'open'
         setTimeout(() => this.drawerOpen = false)
     }
@@ -187,9 +189,10 @@ export class TitleBarComponent {
             
             if (!isOpen) {
                 this.offsetClosed = 100
-                this.offsetOpened = 95
+                this.offsetOpened = 90
                 this.opacityClosed = 0
-                this.opacityOpened = 0.05
+                this.opacityOpened = 0.1
+                this.duration = 300
                 this.drawerOpen = true
             }
 
@@ -199,21 +202,30 @@ export class TitleBarComponent {
             let drawerOffset = -1 
             const touchmove = (evt: TouchEvent) => {
                 if (drawerOffset == -1) {
-            
-                    // drawer is initially 5% visible: drawerWidth * 5 / 100
-                    const initial = !isOpen ? drawerWidth * 5 / 100 : drawerWidth
-                    drawerOffset = initial - evt.touches[0].clientX
-            
                     const diffx = evt.touches[0].clientX - initialX
                     const diffy = evt.touches[0].clientY - initialY
                     const ratio = diffx / diffy 
                     if (Math.abs(ratio) < 2) {
                         window.removeEventListener('touchmove', touchmove, true)
                         window.removeEventListener('touchend', touchend, true)
-                        this.drawerOpen = false
-                            evt.preventDefault()
-                            evt.stopPropagation()
-                            return
+                        if (!isOpen) 
+                            this.drawerOpen = false
+                        evt.preventDefault()
+                        evt.stopPropagation()
+                        return
+                    }
+
+
+
+                    // drawer is initially 5% visible: drawerWidth * 5 / 100
+                    const initial = !isOpen ? drawerWidth * 10 / 100 : drawerWidth
+                    drawerOffset = initial - evt.touches[0].clientX
+
+                    if (!isOpen) {
+                        this.duration = 0
+                        this.offsetTransition = 100 - 10 
+                        this.opacityTransition = 10 / 100
+                        this.transitionState = 'transition'
                     }
                 }
                 
@@ -233,11 +245,25 @@ export class TitleBarComponent {
                 window.removeEventListener('touchmove', touchmove, true)
                 window.removeEventListener('touchend', touchend, true)
 
+                if (drawerOffset == -1) {
+                    if (this.drawerOpen) {
+                        this.duration = 300
+                        this.offsetClosed = 100
+                        this.opacityClosed = 0
+                        this.transitionState = 'open'
+                        this.drawerOpen = false
+                    }
+                    return
+                }
+                    
+
                 let position = (evt.changedTouches[0].clientX + drawerOffset) / drawerWidth * 100
                 if (position > 100)
                     position = 100
 
+                this.duration = 300
                 if (position < 50) {
+                    this.transitionState = 'open'
                     this.offsetClosed = 100
                     this.offsetOpened = 100 - position
                     this.opacityClosed = 0

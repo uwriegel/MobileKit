@@ -60,10 +60,9 @@ export class TitleBarComponent {
     
     transitionState = 'open'
 
-    // TODO: DrawerPosition is always the binded value of the drawer's position 
-    // TODO: this.drawerPosition = 0 => animate(0)
-    // Touchmove: this.drawerPosition = position
-    // fling: this.drawerPosition = fling(v, diff)
+    // TODO: History when manually touched to close
+    // TODO: adapt durations
+    // TODO: fling
     drawerOpen = false
 
     constructor() {}
@@ -178,19 +177,20 @@ export class TitleBarComponent {
         // }
     //}
 
-    onTouchstart(evt: TouchEvent) {
-        if (evt.touches.length == 1 && evt.touches[0].clientX < 15) {
-            
+    
+    onTouchstart(evt: TouchEvent, isOpen: boolean) {
+        if ( (!isOpen && evt.touches.length == 1 && evt.touches[0].clientX < 15 &&  evt.touches[0].clientY > 55) || isOpen) {
+           
             const width = window.document.body.clientWidth
-            console.log("Weit", width)
             const drawerWidth = width * 79 / 100
-            console.log("drawerWidth", drawerWidth)
             
-            this.offsetClosed = 100
-            this.offsetOpened = 95
-            this.opacityClosed = 0
-            this.opacityOpened = 0.05
-            this.drawerOpen = true
+            if (!isOpen) {
+                this.offsetClosed = 100
+                this.offsetOpened = 95
+                this.opacityClosed = 0
+                this.opacityOpened = 0.05
+                this.drawerOpen = true
+            }
 
             const initialX = evt.touches[0].clientX
             const initialY = evt.touches[0].clientY
@@ -199,27 +199,26 @@ export class TitleBarComponent {
             const touchmove = (evt: TouchEvent) => {
                 if (drawerOffset == -1) {
             
-                // drawer is initially 5% visible: drawerWidth * 5 / 100
-                const initial = drawerWidth * 5 / 100
-                drawerOffset = initial - evt.touches[0].clientX
+                    // drawer is initially 5% visible: drawerWidth * 5 / 100
+                    const initial = !isOpen ? drawerWidth * 5 / 100 : drawerWidth
+                    drawerOffset = initial - evt.touches[0].clientX
             
-                const diffx = evt.touches[0].clientX - initialX
-                const diffy = evt.touches[0].clientY - initialY
-                const ratio = diffx / diffy 
-                if (Math.abs(ratio) < 2) {
-                    window.removeEventListener('touchmove', touchmove, true)
-                    window.removeEventListener('touchend', touchend, true)
-                    this.drawerOpen = false
-                        evt.preventDefault()
-                        evt.stopPropagation()
-                        return
+                    const diffx = evt.touches[0].clientX - initialX
+                    const diffy = evt.touches[0].clientY - initialY
+                    const ratio = diffx / diffy 
+                    if (Math.abs(ratio) < 2) {
+                        window.removeEventListener('touchmove', touchmove, true)
+                        window.removeEventListener('touchend', touchend, true)
+                        this.drawerOpen = false
+                            evt.preventDefault()
+                            evt.stopPropagation()
+                            return
                     }
                 }
                 
                 let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
                 if (position > 100)
                     position = 100
-                console.log("Position", position)
                 const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
                 drawer.style.transform = `translateX(${(position - 100)}%)`
                 const shader = document.getElementsByClassName("shader")[0] as HTMLElement
@@ -245,8 +244,10 @@ export class TitleBarComponent {
                     setTimeout(() => this.drawerOpen = false)
                 }
                 else {
-                    // TODO: animate to transition state: not opened, not closed, but another state, then animate to opened
-                    history.pushState("drawer", null, '/drawer')  
+                    if (!isOpen)
+                        history.pushState("drawer", null, '/drawer')  
+                    else
+                        // TODO: History
                     this.offsetClosed = 100 - position
                     this.offsetOpened = 100 - position
                     this.opacityClosed = position / 100
@@ -276,37 +277,4 @@ export class TitleBarComponent {
             evt.stopPropagation()        
         }
     }
-
-    //private transform(setPoint: number): any {
-        // if (this.setPoint != setPoint) {
-        //     let previousSetPoint = this.setPoint
-        //     this.setPoint = setPoint
-        //     let previousTimestamp = 0
-        //     let position = this.setPoint - previousSetPoint
-        //     const ease = x => x*(2-x)
-        //     const duration = 300
-        //     const animate = (timestamp: number) => {
-        //         if (previousTimestamp) {
-        //             const timeDiff = timestamp - previousTimestamp
-        //             const max = Math.abs(position)
-        //             let ratio = timeDiff / (duration * max)
-        //             if (ratio > 1)
-        //                 ratio = 1
-        //             if (ratio <= 1) {
-        //                 this.drawerPosition = previousSetPoint  + (position * ease(ratio))
-        //                 if (ratio < 1) 
-        //                     requestAnimationFrame(animate)
-        //             }
-        //         }
-        //         else {
-        //             setTimeout(n => ScrollerComponent.refresh(), 100)
-        //             previousTimestamp = timestamp
-        //             requestAnimationFrame(animate)
-        //         }
-        //     }
-        
-        //     requestAnimationFrame(animate)
-        // }
-    //}
-    //private setPoint = 0
 }

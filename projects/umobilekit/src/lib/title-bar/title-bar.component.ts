@@ -63,6 +63,7 @@ export class TitleBarComponent {
     duration = 300
     transitionState = 'open'
 
+    // TODO: Close when pressing outside the drawer
     // TODO: History when manually touched to close
     drawerOpen = false
 

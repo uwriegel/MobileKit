@@ -63,7 +63,6 @@ export class TitleBarComponent {
     duration = 300
     transitionState = 'open'
 
-    // TODO: too fast when not opening manually
     // TODO: fling
     // TODO: History when manually touched to close
     drawerOpen = false
@@ -188,6 +187,8 @@ export class TitleBarComponent {
            
             const width = window.document.body.clientWidth
             const drawerWidth = width * 79 / 100
+
+            let gripVisible = false
             
             if (!isOpen) {
                 this.offsetClosed = 100
@@ -197,6 +198,7 @@ export class TitleBarComponent {
                 this.duration = 300
                 this.transitionState = 'open'
                 this.drawerOpen = true
+                gripVisible = true
             }
 
             const initialX = evt.touches[0].clientX
@@ -205,6 +207,8 @@ export class TitleBarComponent {
             let drawerOffset = -1 
             const touchmove = (evt: TouchEvent) => {
                 if (drawerOffset == -1) {
+                    gripVisible = false
+
                     const diffx = evt.touches[0].clientX - initialX
                     const diffy = evt.touches[0].clientY - initialY
                     const ratio = diffx / diffy 
@@ -247,7 +251,7 @@ export class TitleBarComponent {
                 window.removeEventListener('touchend', touchend, true)
 
                 if (drawerOffset == -1) {
-                    if (this.drawerOpen) {
+                    if (this.drawerOpen && gripVisible) {
                         this.duration = 300
                         this.offsetClosed = 100
                         this.opacityClosed = 0
@@ -273,26 +277,15 @@ export class TitleBarComponent {
                 
                 setTimeout(() => {
                     this.transitionState = 'open'
+                    this.duration = 300
                     if (open) {
-                        this.duration = 300
                         this.offsetOpened = 0
                         this.opacityOpened = 1
                     }
                     else {
-                        this.duration = 0
-                        this.offsetOpened = 100 - position
-                        this.opacityOpened = position / 100
-
-
-// TODO: HÄÄÄÄÄ, 
-
-
-                        setTimeout(() => {
-                            this.duration = 300
-                            this.offsetClosed = 100
-                            this.opacityClosed = 0
-                            this.drawerOpen = false
-                        }, 4000)
+                        this.offsetClosed = 100
+                        this.opacityClosed = 0
+                        setTimeout(() => this.drawerOpen = false)
                     }
                 })
    

@@ -25,6 +25,7 @@ import { ScrollerComponent } from '../scroller/scroller.component'
             transition('* => void', animate("{{duration}}ms ease-out"), { params: { duration: 300}}),
             transition('* => transition', animate("0ms ease-out")),
             transition('transition => open', animate("{{duration}}ms ease-out"), { params: { duration: 300}}),
+            transition('transition => void', animate("{{duration}}ms ease-out"), { params: { duration: 300}})
         ]),            
         trigger('transitionMode', [
             state("void", style({ transform: 'translateX(-{{offsetClosed}}%)' }),
@@ -43,6 +44,7 @@ import { ScrollerComponent } from '../scroller/scroller.component'
             transition('* => void', animate("{{duration}}ms ease-out"), { params: { duration: 300}}),
             transition('* => transition', animate("0ms ease-out")),
             transition('transition => open', animate("{{duration}}ms ease-out"), { params: { duration: 300}}),
+            transition('transition => void', animate("{{duration}}ms ease-out"), { params: { duration: 300}})
         ])            
     ]            
 })
@@ -189,10 +191,11 @@ export class TitleBarComponent {
             
             if (!isOpen) {
                 this.offsetClosed = 100
-                this.offsetOpened = 90
+                this.offsetOpened = 94
                 this.opacityClosed = 0
-                this.opacityOpened = 0.1
+                this.opacityOpened = 0.06
                 this.duration = 300
+                this.transitionState = 'open'
                 this.drawerOpen = true
             }
 
@@ -215,16 +218,14 @@ export class TitleBarComponent {
                         return
                     }
 
-
-
                     // drawer is initially 5% visible: drawerWidth * 5 / 100
-                    const initial = !isOpen ? drawerWidth * 10 / 100 : drawerWidth
+                    const initial = !isOpen ? drawerWidth * 6 / 100 : drawerWidth
                     drawerOffset = initial - evt.touches[0].clientX
 
                     if (!isOpen) {
                         this.duration = 0
-                        this.offsetTransition = 100 - 10 
-                        this.opacityTransition = 10 / 100
+                        this.offsetTransition = 100 - 6 
+                        this.opacityTransition = 6 / 100
                         this.transitionState = 'transition'
                     }
                 }
@@ -250,50 +251,56 @@ export class TitleBarComponent {
                         this.duration = 300
                         this.offsetClosed = 100
                         this.opacityClosed = 0
-                        this.transitionState = 'open'
                         this.drawerOpen = false
                     }
                     return
                 }
                     
-
                 let position = (evt.changedTouches[0].clientX + drawerOffset) / drawerWidth * 100
                 if (position > 100)
                     position = 100
 
-                this.duration = 300
-                if (position < 50) {
-                    this.transitionState = 'open'
-                    this.offsetClosed = 100
-                    this.offsetOpened = 100 - position
-                    this.opacityClosed = 0
-                    this.opacityOpened = position / 100
-                    setTimeout(() => this.drawerOpen = false)
-                }
-                else {
-                    if (!isOpen)
-                        history.pushState("drawer", null, '/drawer')  
-                    else
-                        // TODO: History
-                    this.offsetClosed = 100 - position
-                    this.offsetOpened = 100 - position
-                    this.opacityClosed = position / 100
-                    this.opacityOpened = position / 100
-                    this.offsetTransition = 100 - position 
-                    this.opacityTransition = position / 100
+                const open = position >= 50
 
-                    setTimeout(() => {
-                        this.transitionState = 'transition'
-                        this.offsetClosed = 100 - position
-                        this.offsetOpened = 0
-                        this.opacityClosed = position / 100
-                        this.opacityOpened = 1
-                    })
-                    setTimeout(() => {
-                        this.transitionState = 'open'
-                    })
-                }
+                this.duration = 0
+                this.offsetClosed = 100 - position
+                this.offsetOpened = 100 - position
+                this.opacityClosed = position / 100
+                this.opacityOpened = position / 100
+                this.offsetTransition = 100 - position 
+                this.opacityTransition = position / 100
+                this.transitionState = 'transition'
                 
+                setTimeout(() => {
+                    this.transitionState = 'open'
+                    if (open) {
+                        this.duration = 300
+                        this.offsetOpened = 0
+                        this.opacityOpened = 1
+                    }
+                    else {
+                        this.duration = 0
+                        this.offsetOpened = 100 - position
+                        this.opacityOpened = position / 100
+
+
+// TODO: HÄÄÄÄÄ, 
+
+
+                        setTimeout(() => {
+                            this.duration = 300
+                            this.offsetClosed = 100
+                            this.opacityClosed = 0
+                            this.drawerOpen = false
+                        }, 4000)
+                    }
+                })
+   
+                if (open)
+                    history.pushState("drawer", null, '/drawer')  
+                //else
+                    // TODO: History
+        
                 evt.preventDefault()
                 evt.stopPropagation()
             }                

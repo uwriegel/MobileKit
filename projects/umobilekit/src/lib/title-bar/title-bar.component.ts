@@ -63,7 +63,6 @@ export class TitleBarComponent {
     duration = 300
     transitionState = 'open'
 
-    // TODO: fling
     // TODO: History when manually touched to close
     drawerOpen = false
 
@@ -205,6 +204,9 @@ export class TitleBarComponent {
             const initialY = evt.touches[0].clientY
             
             let drawerOffset = -1 
+            let recentTimestamp = 0
+            let recentX = 0
+
             const touchmove = (evt: TouchEvent) => {
                 if (drawerOffset == -1) {
                     gripVisible = false
@@ -237,6 +239,10 @@ export class TitleBarComponent {
                 let position = (evt.touches[0].clientX + drawerOffset) / drawerWidth * 100
                 if (position > 100)
                     position = 100
+
+                recentTimestamp = evt.timeStamp
+                recentX = evt.touches[0].clientX
+
                 const drawer = document.getElementsByClassName("drawer")[0] as HTMLElement
                 drawer.style.transform = `translateX(${(position - 100)}%)`
                 const shader = document.getElementsByClassName("shader")[0] as HTMLElement
@@ -264,8 +270,18 @@ export class TitleBarComponent {
                 if (position > 100)
                     position = 100
 
-                const open = position >= 50
+                const diffDistance = (evt.changedTouches[0].clientX - recentX) / drawerWidth * 100
+                const diffTime = evt.timeStamp - recentTimestamp                    
+                const fling = diffDistance / diffTime
+                console.log("Fling", fling)
 
+                let open = position >= 50
+
+                if (fling > 0.1 && !open)
+                    open = true
+                else if (fling < -0.1 && open)
+                    open = false
+                
                 this.duration = 0
                 this.offsetClosed = 100 - position
                 this.offsetOpened = 100 - position

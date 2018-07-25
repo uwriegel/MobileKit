@@ -18,4 +18,3 @@ npm publish
 Don't forget to add the newly generated component in the ```exports``` section of the lib's ```umobilekit.module```
 
 // TODO: Haptic feedback when opening drawer
-// TODO: Fling

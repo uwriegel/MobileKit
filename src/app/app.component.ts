@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core'
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
 
@@ -14,6 +14,10 @@ export class AppComponent implements OnInit {
     items: string[]
 
     constructor() {}
+
+    onClickStart() {
+        console.log("Haptic")
+    }
 
     onNeue() {
         this.items = this.items.concat([...Array(50)].map((_, i) => `Eintrag ${i}`))

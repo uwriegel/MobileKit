@@ -1,4 +1,4 @@
-import { Directive, ElementRef, Output, EventEmitter, HostListener } from '@angular/core'
+import { Directive, ElementRef, Output, EventEmitter, HostListener, Input, HostBinding } from '@angular/core'
 
 @Directive({
     selector: '[mkClickAnimation]'
@@ -9,7 +9,7 @@ export class ClickAnimationDirective {
         if (this.inClick)
             return
         this.inClick = true
-        //mobileKitApp.onHapticFeedback()
+        this.onClickStart.emit()
         
         const canvas = document.createElement("canvas")
         canvas.width = this.el.nativeElement.offsetWidth
@@ -26,7 +26,7 @@ export class ClickAnimationDirective {
         const drawCircle = (index: number) => {
             const alpha = index / 10
             if (!actionExecuted && alpha > 0.9) {
-                this.onClick.emit()
+                this.onClickEnd.emit()
                 actionExecuted = true
             }
             if (alpha > 1) {
@@ -40,7 +40,7 @@ export class ClickAnimationDirective {
 
             context.beginPath()
             context.arc(centerX, centerY, radius, 0, 2 * Math.PI, false)
-            context.fillStyle = this.clickedColor
+            context.fillStyle = this.animatedColor
             context.globalAlpha = 1 - alpha
             context.fill()
 
@@ -69,12 +69,13 @@ export class ClickAnimationDirective {
 
         requestAnimationFrame(animate)
     }
-    
-    @Output() onClick: EventEmitter<any> = new EventEmitter()    
+
+    @Input("animatedColor") animatedColor = "#eeFFFFFF"
+
+    @Output() onClickStart: EventEmitter<any> = new EventEmitter()    
+    @Output() onClickEnd: EventEmitter<any> = new EventEmitter()    
 
     constructor(private el: ElementRef) { }
 
-    // TODO:
-    private readonly clickedColor = "#e0e0ff"
     private inClick = false
 }

@@ -6,7 +6,7 @@ import { UmobilekitModule } from 'projects/umobilekit/src/public_api'
 
 @NgModule({
     declarations: [
-        AppComponent,
+        AppComponent
     ],
     imports: [
         BrowserModule,

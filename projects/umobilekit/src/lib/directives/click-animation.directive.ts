@@ -4,13 +4,13 @@ import { Directive, ElementRef, Output, EventEmitter, HostListener, Input, HostB
     selector: '[mkClickAnimation]'
 })
 export class ClickAnimationDirective {
-
+    
     @HostListener('click', ["$event"]) click(evt: MouseEvent) {
         if (this.inClick)
             return
         this.inClick = true
         this.onClickStart.emit()
-        
+
         const canvas = document.createElement("canvas")
         canvas.width = this.el.nativeElement.offsetWidth
         canvas.height = this.el.nativeElement.offsetHeight
@@ -70,7 +70,8 @@ export class ClickAnimationDirective {
         requestAnimationFrame(animate)
     }
 
-    @Input("animatedColor") animatedColor = "#eeFFFFFF"
+    @Input() 
+    animatedColor = "#bbb"
 
     @Output() onClickStart: EventEmitter<any> = new EventEmitter()    
     @Output() onClickEnd: EventEmitter<any> = new EventEmitter()    

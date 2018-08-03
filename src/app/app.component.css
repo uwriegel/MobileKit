@@ -18,3 +18,7 @@ mk-scroller {
     flex-grow: 1;
 }
 
+.item {
+    padding: 10px;
+}
+

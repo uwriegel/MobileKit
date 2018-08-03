@@ -34,7 +34,7 @@ export class ClickAnimationDirective {
                 this.el.nativeElement.style.background = ""
                 return false
             }
-            const radius = (canvas.height / 2 - 6) + alpha * (canvas.width / 2 - (canvas.height / 2 - 6))
+            const radius =   alpha * (canvas.width / 2)
 
             context.clearRect(0, 0, canvas.width, canvas.height)
 

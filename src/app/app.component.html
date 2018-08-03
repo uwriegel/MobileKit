@@ -1,5 +1,7 @@
 <mk-scroller>
-    <div class="button" mkClickAnimation  (onClickStart)="onClickStart()" (onClickEnd)="onNeue()">Neue</div>
+    <div class="button" mkClickAnimation (onClickStart)="onClickStart()" (onClickEnd)="onNeue()">Neue</div>
     <div class="button" mkClickAnimation [animatedColor]="'#e0e0ff'" (onClickStart)="onClickStart()" (onClickEnd)="onWeg()">Weg</div>
-    <div *ngFor="let item of items">Das ist der {{item}}</div>
+    <div>
+        <div mkClickAnimation [animatedColor]="'#e0e0ff'" (onClickStart)="onClickStart()" class="item" *ngFor="let item of items">Das ist der {{item}}</div>
+    </div>
 </mk-scroller>

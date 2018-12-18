@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ElementRef, ViewChild } from '@angular/core'
+import { Component, OnInit, AfterViewInit, ElementRef, ViewChild, Input } from '@angular/core'
 
 declare class ScrollerParams {
     /*  
@@ -34,6 +34,7 @@ export class ScrollerComponent implements OnInit, AfterViewInit {
     @ViewChild("scroller")
     scroller: ElementRef
 
+    @Input()
     showScrollBar = true
 
     constructor() { }
